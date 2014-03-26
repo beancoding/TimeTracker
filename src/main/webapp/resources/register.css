@@ -1,0 +1,6 @@
+#username > input[type='text']{
+	margin-left:62px;
+}
+#password > input[type='password']{
+	margin-left:71px;
+}

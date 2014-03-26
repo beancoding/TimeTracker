@@ -7,21 +7,25 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.dmcliver.timetracker.datalayer.SysUserDAO;
+import com.dmcliver.timetracker.domain.SysUser;
 import com.dmcliver.timetracker.domain.SysUserDetails;
 
 @Service
 public class SysUserDetailsService implements UserDetailsService {
-
+	
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private SysUserDAO sysUserDAO;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username)	throws UsernameNotFoundException {
 
-		SysUserDetails webUserDetails = new SysUserDetails();
-		String password = webUserDetails.getPassword();
-		String encodedPassword = passwordEncoder.encode(password);
-		webUserDetails.setPassword(encodedPassword);
-		return webUserDetails;
+		SysUser user = sysUserDAO.findByUsername(username);
+		
+		if(user == null)
+			throw new UsernameNotFoundException("No user");
+		
+		SysUserDetails sysUserDetails = new SysUserDetails(user.getPassword(), user.getUserName());
+		return sysUserDetails;
 	}
 }

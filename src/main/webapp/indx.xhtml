@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Index</title>
+</h:head>
+
+<h:body>
+	<h3>Yollo</h3>
+	<h:outputText value="#{homeControllerBean.greetings}"/>
+	<p:dataTable var="u" value="#{homeControllerBean.users}" >
+		<p:column headerText="Name" sortBy="Name">
+			<h:outputText value="#{u.userName}"/>
+		</p:column>
+		<p:column headerText="Password" sortBy="Password">
+			<h:outputText value="#{u.password}"/>
+		</p:column>
+	</p:dataTable>
+</h:body>
+
+</html>

@@ -1,5 +1,7 @@
 package com.dmcliver.timetracker.domain;
 
+import java.util.Calendar;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,7 +11,10 @@ public class TimeEntry {
 	private TimeEntryPK timeEntryPK;
 	private SysUser sysUser;
 	private Job job;
-
+	private Calendar startTime;
+	private Calendar endTime;
+	private String entryComments;
+	
 	public TimeEntry(TimeEntryPK timeEntryPK, SysUser sysUser, Job job) {
 		
 		this.timeEntryPK = timeEntryPK;
@@ -43,5 +48,29 @@ public class TimeEntry {
 	}
 	public void setJob(Job job) {
 		this.job = job;
+	}
+	
+	@Column(name = "StartTime", nullable = false)
+	public Calendar getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Calendar startTime) {
+		this.startTime = startTime;
+	}
+	
+	@Column(name = "EndTime")
+	public Calendar getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Calendar endTime) {
+		this.endTime = endTime;
+	}
+	
+	@Column(name = "EntryComments")
+	public String getEntryComments() {
+		return entryComments;
+	}
+	public void setEntryComments(String entryComments) {
+		this.entryComments = entryComments;
 	}
 }

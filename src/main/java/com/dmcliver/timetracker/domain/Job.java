@@ -1,6 +1,6 @@
 package com.dmcliver.timetracker.domain;
 
-import java.util.UUID;
+import java.util.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,4 +39,5 @@ public class Job {
 	public void setFinished(boolean finished) {
 		this.finished = finished;
 	}
+
 }

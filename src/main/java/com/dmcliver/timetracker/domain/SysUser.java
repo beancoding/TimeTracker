@@ -9,6 +9,14 @@ public class SysUser {
 	private String userName;
 	private String password;
 	
+	public SysUser(String userName, String password) {
+		
+		this.userName = userName;
+		this.password = password;
+	}
+	
+	public SysUser() {}
+	
 	@Id
 	@Column(name = "UserName")
 	public String getUserName() {

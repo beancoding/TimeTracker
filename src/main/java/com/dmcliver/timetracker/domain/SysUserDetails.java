@@ -11,7 +11,15 @@ public class SysUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = -4865939957180938327L;
 	private String password = "password1";
+	private String user;
 
+	public SysUserDetails(String password, String user) {
+		this.password = password;
+		this.user = user;
+	}
+
+	public SysUserDetails() {}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -27,7 +35,7 @@ public class SysUserDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 
-		return "user1";
+		return user;
 	}
 
 	@Override

@@ -6,26 +6,30 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.dmcliver.timetracker.datalayer.SysUserDAO;
-import com.dmcliver.timetracker.domain.SysUser;
+import com.dmcliver.timetracker.datalayer.NoteDAO;
+import com.dmcliver.timetracker.domain.Note;
 
 @Component
 @ManagedBean
 @RequestScoped
 public class HomeControllerBean {
 
+	private NoteDAO noteDAO;	
+	
 	@Autowired
-	private SysUserDAO sysUserDAO;
-	
-	public String getGreetings(){
+	public HomeControllerBean(NoteDAO noteDAO) {
 		
-		sysUserDAO.findAll();
-		return sysUserDAO == null ? "Crap" : "Sweet";
+		this.noteDAO = noteDAO;
 	}
-	
-	public List<SysUser> getUsers(){
-		return sysUserDAO.findAll();
+
+	public List<Note> getNotes(){
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String name = authentication.getName();
+		return noteDAO.findByUser(name);
 	}
 }

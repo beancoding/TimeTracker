@@ -9,6 +9,6 @@
 	Redirecting...  
 </h1>
 
-	<% response.sendRedirect("/timetracker/indx.jsf"); %>
+	<% response.sendRedirect("/timetracker/userhome.dhtml"); %>
 </body>
 </html>

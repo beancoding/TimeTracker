@@ -12,15 +12,14 @@
 </h:head>
 
 <h:body>
-	<h3>Yollo</h3>
-	<h:outputText value="#{homeControllerBean.greetings}"/>
-	<p:dataTable var="u" value="#{homeControllerBean.users}" >
-		<p:column headerText="Name" sortBy="Name">
-			<h:outputText value="#{u.userName}"/>
+	<h3>General Notes</h3>
+
+	<p:dataTable var="n" value="#{homeControllerBean.notes}" >
+	
+		<p:column headerText="Notes" sortBy="Content">
+			<h:outputText value="#{n.content}"/>
 		</p:column>
-		<p:column headerText="Password" sortBy="Password">
-			<h:outputText value="#{u.password}"/>
-		</p:column>
+		
 	</p:dataTable>
 </h:body>
 

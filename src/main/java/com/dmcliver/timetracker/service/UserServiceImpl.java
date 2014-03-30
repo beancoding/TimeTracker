@@ -14,14 +14,14 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private SysUserDAO sysUserDAO;
 	
-//	@Autowired
-//	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public void save(UserModel model) {
 		
-		//String password = passwordEncoder.encode(model.getPassword());
-		//SysUser user = new SysUser(model.getName(), password);
-		//sysUserDAO.save(user);
+		String password = passwordEncoder.encode(model.getPassword());
+		SysUser user = new SysUser(model.getName(), password);
+		sysUserDAO.save(user);
 	}
 }

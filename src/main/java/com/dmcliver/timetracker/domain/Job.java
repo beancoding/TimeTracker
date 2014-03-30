@@ -14,6 +14,7 @@ public class Job {
 	private UUID jobId;
 	private String jobName;
 	private boolean finished;
+	private double estimate;
 	
 	@Id
 	@Column(name = "JobId")
@@ -38,6 +39,14 @@ public class Job {
 	}
 	public void setFinished(boolean finished) {
 		this.finished = finished;
+	}
+	
+	@Column(name = "Estimate")
+	public double getEstimate() {
+		return estimate;
+	}
+	public void setEstimate(double estimate) {
+		this.estimate = estimate;
 	}
 
 }

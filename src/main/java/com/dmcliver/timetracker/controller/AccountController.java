@@ -30,8 +30,7 @@ public class AccountController {
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(){
-		
-		sysUserDAO.findAll();
+
 		return "login";
 	}
 	

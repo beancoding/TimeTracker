@@ -48,4 +48,12 @@ public class NoteDAOImpl implements NoteDAO {
 		
 		return entityManager.createQuery(query).getResultList();
 	}
+
+	@Override
+	@Transactional
+	public void delete(Note n) {
+		
+		Note dbNote = entityManager.find(Note.class, n.getNoteId());
+		entityManager.remove(dbNote);
+	}
 }

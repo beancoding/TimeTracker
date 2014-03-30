@@ -8,4 +8,5 @@ public interface NoteDAO {
 
 	void save(Note note);
 	List<Note> findByUser(String name);
+	void delete(Note n);
 }

@@ -12,15 +12,35 @@
 </h:head>
 
 <h:body>
-	<h3>General Notes</h3>
-
-	<p:dataTable var="n" value="#{homeControllerBean.notes}" >
 	
-		<p:column headerText="Notes" sortBy="Content">
-			<h:outputText value="#{n.content}"/>
-		</p:column>
+	<p:panel>
+		<h3>General Notes</h3>
+	
+		<h:form id="notesForm">
+	
+			<p:dataTable id="noteTable" var="n" value="#{homeControllerBean.notes}" >
+			
+				<p:column headerText="Notes" sortBy="content">
+					<h:outputText value="#{n.content}"/>
+				</p:column>
+				
+				<p:column>
+					<p:commandButton value="Delete" action="#{homeControllerBean.deleteNote(n)}" update=":notesForm:noteTable"/>
+				</p:column>
+				
+			</p:dataTable>
 		
-	</p:dataTable>
+			<h:outputLabel value="Note:"/>
+			<div>
+				<h:inputTextarea value="#{homeControllerBean.noteContent}"/>
+			</div>
+			<p:commandButton value="Add note" action="#{homeControllerBean.addNote}" update=":notesForm:noteTable"/>
+			
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+			
+		</h:form>	
+		
+	</p:panel>
 </h:body>
 
 </html>

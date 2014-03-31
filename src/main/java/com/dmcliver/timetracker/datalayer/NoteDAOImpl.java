@@ -1,8 +1,6 @@
 package com.dmcliver.timetracker.datalayer;
 
 import java.util.List;
-import java.util.UUID;
-
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;

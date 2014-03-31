@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,15 +40,11 @@ public class HomeControllerBean {
 	
 	public List<Note> getNotes(){
 		
-		if(notes == null)			
-			updateNotes();
+		if(notes == null){
+			String name = getUsername();
+			notes = noteDAO.findByUser(name);
+		}
 		return notes;
-	}
-
-	private void updateNotes() {
-		
-		String name = getUsername();
-		notes = noteDAO.findByUser(name);
 	}
 
 	private String getUsername() {
@@ -66,14 +60,15 @@ public class HomeControllerBean {
 		SysUser user = sysUserDAO.findByUsername(getUsername());
 		n.setUser(user);
 		noteDAO.save(n);
-		updateNotes();
+		notes.add(n);
+		noteContent = "";
 		return "this";
 	}
 	
 	public String deleteNote(Note n){
 		
 		noteDAO.delete(n);
-		updateNotes();
+		notes.remove(n);
 		return "this";
 	}
 }

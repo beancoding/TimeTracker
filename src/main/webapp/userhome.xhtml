@@ -25,16 +25,19 @@
 				</p:column>
 				
 				<p:column>
-					<p:commandButton value="Delete" action="#{homeControllerBean.deleteNote(n)}" update=":notesForm:noteTable"/>
+					<p:commandButton value="Delete" action="#{homeControllerBean.deleteNote(n)}" process=":notesForm:noteTable" update=":notesForm:noteTable"/>
 				</p:column>
 				
 			</p:dataTable>
 		
+			<br/>
+		
+			<p:message for="noteText"/>
 			<h:outputLabel value="Note:"/>
 			<div>
-				<h:inputTextarea value="#{homeControllerBean.noteContent}"/>
+				<h:inputTextarea id="noteText" value="#{homeControllerBean.noteContent}" required="true" requiredMessage="The note must contain content"/>
 			</div>
-			<p:commandButton value="Add note" action="#{homeControllerBean.addNote}" update=":notesForm:noteTable"/>
+			<p:commandButton value="Add note" action="#{homeControllerBean.addNote}" update=":notesForm"/>
 			
 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			

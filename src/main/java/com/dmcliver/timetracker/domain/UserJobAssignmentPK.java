@@ -7,19 +7,19 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class TimeEntryPK implements Serializable{
+public class UserJobAssignmentPK implements Serializable{
 
 	private static final long serialVersionUID = -5584144769207079839L;
 
 	private String userName;
 	private UUID jobId;
 	
-	public TimeEntryPK(String userName, UUID jobId) {
+	public UserJobAssignmentPK(String userName, UUID jobId) {
 		this.userName = userName;
 		this.jobId = jobId;
 	}
 	
-	public TimeEntryPK() {}
+	public UserJobAssignmentPK() {}
 	
 	@Column(name = "SysUserId")
 	public String getUserName() {

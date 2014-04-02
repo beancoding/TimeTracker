@@ -28,7 +28,7 @@ public class Note {
 		this.noteId = noteId;
 	}
 	
-	@Column(name = "Content", nullable = false)
+	@Column(name = "Content", nullable = false, length = 1200)
 	public String getContent() {
 		return content;
 	}

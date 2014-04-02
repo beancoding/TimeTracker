@@ -14,32 +14,88 @@
 <h:body>
 	
 	<p:panel>
-		<h3>General Notes</h3>
 	
-		<h:form id="notesForm">
+		<h:form id="jobsForm">
 	
-			<p:dataTable id="noteTable" var="n" value="#{homeControllerBean.notes}" >
+			<h3>Assigned jobs</h3>
+	
+			<p:panel>
 			
-				<p:column headerText="Notes" sortBy="content">
-					<h:outputText value="#{n.content}"/>
-				</p:column>
+				<p:dataTable id="jobTable" var="j" value="#{homeControllerBean.jobs}" 
+				 paginator="true" rows="5"
+	             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+	             paginatorPosition="bottom">
+					
+						<p:column headerText="Jobs" sortBy="jobName">
+							<h:outputText value="#{j.jobName}"/>
+						</p:column>
+						
+						<p:column style="width:80px" >
+							<h:outputLink value="job.dhtml" >
+								<h:outputText value="Start"/>
+								<f:param name="jobName" value="#{j.jobName}" />
+							</h:outputLink>
+						</p:column>
+						
+				</p:dataTable>
+			
+				<br/>
+			
+				<p:message for="jobText"/>
 				
-				<p:column>
-					<p:commandButton value="Delete" action="#{homeControllerBean.deleteNote(n)}" process=":notesForm:noteTable" update=":notesForm:noteTable"/>
-				</p:column>
+				<p:panelGrid columns="2">
 				
-			</p:dataTable>
+					<h:outputLabel value="Job:"/>
+					<h:inputText id="jobText" value="#{homeControllerBean.jobName}" required="true" requiredMessage="The job must have a name"/>
+					
+					<h:outputLabel value="Estimate:"/>
+					<h:inputText id="jobEstimate" value="#{homeControllerBean.estimate}" />
+					
+				</p:panelGrid>
+				
+				<p:commandButton value="Add job" action="#{homeControllerBean.addJob}" update=":jobsForm"/>
+			
+			</p:panel>
+			
+			<input id="crsfVals1" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+			
+		</h:form>
 		
+		<h:form id="notesForm">	
+			
+			<h3>General notes</h3>
+			
+			<p:panel>
+			
+				<p:dataTable id="noteTable" var="n" value="#{homeControllerBean.notes}" 
+				 paginator="true" rows="5"
+	             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+	             paginatorPosition="bottom">
+				
+					<p:column headerText="Notes" sortBy="content">
+						<h:outputText value="#{n.content}"/>
+					</p:column>
+					
+					<p:column style="width:80px">
+						<p:commandButton value="Delete" action="#{homeControllerBean.deleteNote(n)}" process=":notesForm:noteTable" update=":notesForm:noteTable"/>
+					</p:column>
+					
+				</p:dataTable>
+			
+				<br/>
+			
+				<p:message for="noteText"/>
+				<h:outputLabel value="Note:"/>
+				<div>
+					<h:inputTextarea rows="4" cols="37" id="noteText" value="#{homeControllerBean.noteContent}" required="true" requiredMessage="The note must contain content"/>
+				</div>
+				<p:commandButton value="Add note" action="#{homeControllerBean.addNote}" update=":notesForm"/>
+			
+			</p:panel>	
+			
 			<br/>
-		
-			<p:message for="noteText"/>
-			<h:outputLabel value="Note:"/>
-			<div>
-				<h:inputTextarea id="noteText" value="#{homeControllerBean.noteContent}" required="true" requiredMessage="The note must contain content"/>
-			</div>
-			<p:commandButton value="Add note" action="#{homeControllerBean.addNote}" update=":notesForm"/>
 			
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+			<input id="crsfVals2" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			
 		</h:form>	
 		

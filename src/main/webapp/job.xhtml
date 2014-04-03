@@ -12,7 +12,17 @@
 	</h:head>
 	
 	<h:body>
-		<h3>jobs for user...</h3>
+		<p:panel>
+			<div style="float:left">
+				<h3>Job: <h:outputText value="#{jobTimeEntryControllerBean.job.jobName}"/></h3>
+			</div>
+			<div style="float:right">
+				<h3>Estimate: <h:outputText value="#{jobTimeEntryControllerBean.job.estimate}"/></h3>
+			</div>
+			<div style="clear:left">
+				<p:commandButton value="#{timeControllerBean.inProgress?'Stop':'Start'}"/>
+			</div>
+		</p:panel>
 	</h:body>
 
 </html>

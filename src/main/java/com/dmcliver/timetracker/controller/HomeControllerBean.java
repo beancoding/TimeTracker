@@ -130,9 +130,4 @@ public class HomeControllerBean {
 		String name = authentication.getName();
 		return name;
 	}
-	
-	public String viewJob(Job j){
-		
-		return "job";
-	}
 }

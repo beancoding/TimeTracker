@@ -1,8 +1,6 @@
 package com.dmcliver.timetracker.datalayer;
 
 import java.util.List;
-import java.util.UUID;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -22,6 +20,22 @@ public class JobDAOImpl implements JobDAO {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	@Override
+	public Job findByName(String jobName) {
+
+		CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Job> query = criteria.createQuery(Job.class);
+		
+		Root<Job> j = query.from(Job.class);
+		query.select(j).where(criteria.equal(j.get("jobName"), jobName));
+		
+		Job job = entityManager.createQuery(query)
+							   .setMaxResults(1)
+							   .getResultList()
+							   .get(0);
+		return job;
+	}
 	
 	@Override
 	public List<Job> findAllForUser(String userName){
@@ -29,16 +43,16 @@ public class JobDAOImpl implements JobDAO {
 		CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Job> query = criteria.createQuery(Job.class);
 		
-		Root<UserJobAssignment> uja = query.from(UserJobAssignment.class);
+		Root<UserJobAssignment> jobAss = query.from(UserJobAssignment.class);
 		
-		Join<UserJobAssignment, Job> j = uja.join("job");
-		Join<UserJobAssignment, SysUser> u = uja.join("sysUser");
+		Join<UserJobAssignment, Job> j = jobAss.join("job");
+		Join<UserJobAssignment, SysUser> u = jobAss.join("sysUser");
 		
 		query.select(j).where(criteria.equal(u.get("userName"), userName));
 		
 		return entityManager.createQuery(query).getResultList();
 	}
-
+	
 	@Override
 	@Transactional
 	public void save(Job job) {

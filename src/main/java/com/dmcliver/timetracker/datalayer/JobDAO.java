@@ -10,4 +10,5 @@ public interface JobDAO {
 	public abstract List<Job> findAllForUser(String userName);
 	public abstract void save(Job job);
 	public abstract void save(UserJobAssignment userJobAssignment);
+	public abstract Job findByName(String jobName);
 }

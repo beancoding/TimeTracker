@@ -13,8 +13,14 @@ import org.springframework.stereotype.Component;
 import static com.dmcliver.timetracker.TimeTrackerConstants.emptyString;
 
 import com.dmcliver.timetracker.datalayer.JobDAO;
+import com.dmcliver.timetracker.datalayer.NoteDAO;
+import com.dmcliver.timetracker.datalayer.SysUserDAO;
 import com.dmcliver.timetracker.datalayer.TimeEntryDAO;
+import com.dmcliver.timetracker.datalayer.UserJobAssignmentDAO;
 import com.dmcliver.timetracker.domain.Job;
+import com.dmcliver.timetracker.domain.Note;
+import com.dmcliver.timetracker.domain.NoteComment;
+import com.dmcliver.timetracker.domain.SysUser;
 import com.dmcliver.timetracker.domain.TimeDifferential;
 import com.dmcliver.timetracker.domain.TimeEntry;
 
@@ -23,14 +29,27 @@ import com.dmcliver.timetracker.domain.TimeEntry;
 @RequestScoped
 public class JobTimeEntryControllerBean extends ControllerBeanBase{
 
-	@Autowired
 	private JobDAO jobDAO;
-	
-	@Autowired
 	private TimeEntryDAO timeEntryDAO;
+	private UserJobAssignmentDAO userJobAssignmentDAO;
+	private NoteDAO noteDAO;
+	private SysUserDAO sysUserDAO;
 	
 	private boolean inProgress = false;
 	private Job job;
+	private String noteText;
+	private String commentText;
+	private List<NoteComment> noteComments;
+	
+	@Autowired
+	public JobTimeEntryControllerBean(JobDAO jobDAO, TimeEntryDAO timeEntryDAO,	UserJobAssignmentDAO userJobAssignmentDAO, NoteDAO noteDAO, SysUserDAO sysUserDAO) {
+		
+		this.jobDAO = jobDAO;
+		this.timeEntryDAO = timeEntryDAO;
+		this.userJobAssignmentDAO = userJobAssignmentDAO;
+		this.noteDAO = noteDAO;
+		this.sysUserDAO = sysUserDAO;
+	}
 	
 	public Job getJob() {
 
@@ -86,5 +105,51 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 			total += timeDifferential.getDiff();
 		}		
 		return total;
+	}
+	
+	public List<NoteComment> getComments(){
+	
+		if(job == null) refreshJob();
+		if(noteComments == null)
+			noteComments = userJobAssignmentDAO.findAllAssociatedComments(getUsername(), job.getJobId());
+		return noteComments;
+	}
+
+	public String getNoteText() {
+		return noteText;
+	}
+	public void setNoteText(String noteText) {
+		this.noteText = noteText;
+	}
+	
+	public String addNote(){
+		
+		Note note = new Note(noteText);
+		
+		if(job == null) refreshJob();
+		note.setJob(job);
+		
+		SysUser user = sysUserDAO.findByUsername(super.getUsername());
+		note.setUser(user);
+		
+		noteDAO.save(note);
+		
+		noteComments.add(new NoteComment(noteText));
+		return "this";
+	}
+
+	public String getCommentText() {
+		return commentText;
+	}
+	public void setCommentText(String commentText) {
+		this.commentText = commentText;
+	}
+	
+	public String addComment(){
+		
+		//TODO: implement add comments
+		NoteComment nc = new NoteComment("abc", Calendar.getInstance(), Calendar.getInstance());
+		noteComments.add(nc);
+		return "this";
 	}
 }

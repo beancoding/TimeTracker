@@ -37,7 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	   		.loginPage("/login")
 	   		.loginProcessingUrl("/jsecuritycheck")
 	   		.defaultSuccessUrl("/")
-	   		.failureUrl("/badlogin");
+	   		.failureUrl("/badlogin")
+   		.and()
+   		.logout().logoutUrl("/logout");
 	}
 	
 	public void configure(AuthenticationManagerBuilder builder) throws Exception{

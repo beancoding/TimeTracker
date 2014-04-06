@@ -9,11 +9,18 @@
 
 	<h:head>
 		<title>Jobs</title>
+		<script type="text/javascript">
+			function showDialogOnStop(el){
+				if(el.innerText.indexOf("Stop") != -1)
+					PF('dlg1').show();
+			}
+		</script>
 	</h:head>
 	
 	<h:body>
 		<p:panel>
-			<h:form>
+		
+			<h:form id="form1">
 				
 				<div style="float:left">
 					<h3>Job: <h:outputText value="#{jobTimeEntryControllerBean.job.jobName}"/></h3>
@@ -25,12 +32,58 @@
 				</div>
 				
 				<div style="clear:left">
-					<p:commandButton value="#{jobTimeEntryControllerBean.inProgress?'Stop':'Start'}" action="#{jobTimeEntryControllerBean.updateTime}" ajax="false"/>
+					<p:commandButton onclick="javascript:showDialogOnStop(this)" value="#{jobTimeEntryControllerBean.inProgress?'Stop':'Start'}" action="#{jobTimeEntryControllerBean.updateTime}" update="@this"/>
 				</div>
 				
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				
+				<br/>
+				
+				<p:dataTable value="#{jobTimeEntryControllerBean.comments}" var="c">
+				
+					<p:column sortBy="content">
+						<h:outputText value="#{c.content}"/>
+					</p:column>
+					<p:column style="width:195px" headerText="Start date" sortBy="start">
+						<h:outputText value="#{c.start}"/>
+					</p:column>
+					<p:column style="width:195px" headerText="End date" sortBy="end">
+						<h:outputText value="#{c.end}"/>
+					</p:column>
+					
+				</p:dataTable>
+				
+				<br/>
+			
 			</h:form>
+			
+			<p:dialog id="basicDialog" header="Add note (optional):" widgetVar="dlg1" modal="true">
+				<h:form id="dialogForm">
+				    
+				    <h:outputText value="Add note (optional):" />
+				    <h:inputTextarea id="comment" value="#{jobTimeEntryControllerBean.commentText}" />
+				    
+				    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				    
+				    <p:commandButton value="Add" action="#{jobTimeEntryControllerBean.addComment}" process=":dialogForm:comment" oncomplete="PF('dlg1').hide();" ajax="false"/>
+				    <p:commandButton value="Decline" onclick="javascript:PF('dlg1').hide();" />
+				    
+			    </h:form>
+			</p:dialog>
+			
+			<h:form id="form2">
+				
+				<p:message for="noteText"/>
+				<h:outputLabel value="Note:"/>
+				<div>
+					<h:inputTextarea rows="4" cols="37" id="noteText" value="#{jobTimeEntryControllerBean.noteText}" required="true" requiredMessage="The note must contain content"/>
+				</div>
+				<p:commandButton value="Add note" action="#{jobTimeEntryControllerBean.addNote}" ajax="false"/>
+				
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				
+			</h:form>
+			
 		</p:panel>
 	</h:body>
 

@@ -3,10 +3,12 @@ package com.dmcliver.timetracker.controller;
 import java.util.List;
 import java.util.UUID;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-
+import javax.faces.context.FacesContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import static com.dmcliver.timetracker.TimeTrackerConstants.*;
@@ -106,7 +108,16 @@ public class HomeControllerBean extends ControllerBeanBase {
 		
 		UUID jobId = UUID.randomUUID();
 		Job job = new Job(jobName, estimate, jobId);
-		jobDAO.save(job);
+		
+		try{
+			jobDAO.save(job);
+		}
+		catch(DataIntegrityViolationException ex){
+			
+			FacesContext.getCurrentInstance().addMessage("UniqueJobnameViolation", new FacesMessage(FacesMessage.SEVERITY_ERROR, "The job name must be unique", ""));
+			return "this";
+		}
+		
 		jobs.add(job);
 		
 		String username = super.getUsername();

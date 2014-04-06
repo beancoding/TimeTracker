@@ -34,7 +34,7 @@ public class Job {
 		this.jobId = jobId;
 	}
 	
-	@Column(name = "JobName", nullable = false)
+	@Column(name = "JobName", nullable = false, unique = true)
 	public String getJobName() {
 		return jobName;
 	}

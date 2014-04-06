@@ -10,7 +10,7 @@ public class UserModel {
 	private String password;
 	private String confirmPassword;
 	
-	@Length(min = 7, max = 7, message = "*The user name must be 7 letters")
+	@Length(min = 7, max = 11, message = "*The user name must be between 7-11 letters")
 	public String getName() {
 		return name;
 	}

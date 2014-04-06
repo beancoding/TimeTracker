@@ -1,5 +1,6 @@
 package com.dmcliver.timetracker.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -77,5 +78,12 @@ public class AccountController {
 		
 		model.addAttribute("error", true);
 		return "login";
+	}
+	
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout(HttpServletRequest request){
+		
+		request.getSession(false).invalidate();;
+		return "/";
 	}
 }

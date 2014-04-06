@@ -7,8 +7,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import static com.dmcliver.timetracker.TimeTrackerConstants.*;
@@ -25,7 +23,7 @@ import com.dmcliver.timetracker.domain.UserJobAssignmentPK;
 @Component
 @ManagedBean
 @RequestScoped
-public class HomeControllerBean {
+public class HomeControllerBean extends ControllerBeanBase {
 
 	private NoteDAO noteDAO;	
 	private SysUserDAO sysUserDAO;
@@ -71,7 +69,7 @@ public class HomeControllerBean {
 	public List<Note> getNotes(){
 		
 		if(notes == null){
-			String name = getUsername();
+			String name = super.getUsername();
 			notes = noteDAO.findByUser(name);
 		}
 		return notes;
@@ -80,7 +78,7 @@ public class HomeControllerBean {
 	public List<Job> getJobs() {
 		
 		if(jobs == null)
-			jobs = jobDAO.findAllForUser(getUsername());
+			jobs = jobDAO.findAllForUser(super.getUsername());
 		
 		return jobs;
 	}
@@ -89,7 +87,7 @@ public class HomeControllerBean {
 	public String addNote(){
 		
 		Note n = new Note(noteContent);
-		SysUser user = sysUserDAO.findByUsername(getUsername());
+		SysUser user = sysUserDAO.findByUsername(super.getUsername());
 		n.setUser(user);
 		noteDAO.save(n);
 		notes.add(n);
@@ -111,7 +109,7 @@ public class HomeControllerBean {
 		jobDAO.save(job);
 		jobs.add(job);
 		
-		String username = getUsername();
+		String username = super.getUsername();
 		SysUser user = sysUserDAO.findByUsername(username);
 		
 		UserJobAssignment userJobAssignment = new UserJobAssignment(new UserJobAssignmentPK(username, jobId), user, job);
@@ -121,13 +119,5 @@ public class HomeControllerBean {
 		estimate = 0;
 		
 		return "this";
-	}
-	
-	/* Helper methods */
-	private String getUsername() {
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String name = authentication.getName();
-		return name;
 	}
 }

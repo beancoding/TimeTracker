@@ -17,9 +17,9 @@
 	
 		<h:form id="jobsForm">
 	
-			<h3>Assigned jobs</h3>
-	
 			<p:panel>
+			
+				<h3>Assigned jobs</h3>
 			
 				<p:dataTable id="jobTable" var="j" value="#{homeControllerBean.jobs}" 
 				 paginator="true" rows="5"
@@ -30,7 +30,7 @@
 							<h:outputText value="#{j.jobName}"/>
 						</p:column>
 						
-						<p:column style="width:80px" >
+						<p:column style="width:50px" >
 							<h:outputLink value="job.dhtml" >
 								<h:outputText value="Start"/>
 								<f:param name="jobName" value="#{j.jobName}" />
@@ -61,11 +61,13 @@
 			
 		</h:form>
 		
+		<br/>
+		
 		<h:form id="notesForm">	
 			
-			<h3>General notes</h3>
-			
 			<p:panel>
+			
+				<h3>General notes</h3>
 			
 				<p:dataTable id="noteTable" var="n" value="#{homeControllerBean.notes}" 
 				 paginator="true" rows="5"
@@ -92,8 +94,7 @@
 				<p:commandButton value="Add note" action="#{homeControllerBean.addNote}" update=":notesForm"/>
 			
 			</p:panel>	
-			
-			<br/>
+
 			
 			<input id="crsfVals2" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 			

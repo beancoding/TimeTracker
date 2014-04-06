@@ -13,15 +13,24 @@
 	
 	<h:body>
 		<p:panel>
-			<div style="float:left">
-				<h3>Job: <h:outputText value="#{jobTimeEntryControllerBean.job.jobName}"/></h3>
-			</div>
-			<div style="float:right">
-				<h3>Estimate: <h:outputText value="#{jobTimeEntryControllerBean.job.estimate}"/></h3>
-			</div>
-			<div style="clear:left">
-				<p:commandButton value="#{timeControllerBean.inProgress?'Stop':'Start'}"/>
-			</div>
+			<h:form>
+				
+				<div style="float:left">
+					<h3>Job: <h:outputText value="#{jobTimeEntryControllerBean.job.jobName}"/></h3>
+				</div>
+				
+				<div style="float:right">
+					<h3></h3>
+					<h3><span>Estimate: <h:outputText value="#{jobTimeEntryControllerBean.job.estimate}"/></span><span style="margin-left:35px">Time elapsed: <h:outputText value="#{jobTimeEntryControllerBean.timeElapsed}"/></span></h3>
+				</div>
+				
+				<div style="clear:left">
+					<p:commandButton value="#{jobTimeEntryControllerBean.inProgress?'Stop':'Start'}" action="#{jobTimeEntryControllerBean.updateTime}" ajax="false"/>
+				</div>
+				
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				
+			</h:form>
 		</p:panel>
 	</h:body>
 

@@ -27,14 +27,16 @@ public class UserJobAssignmentDAOImpl implements UserJobAssignmentDAO {
 	private EntityManager entityManager;
 	
 	@Override
-	public List<NoteComment> findAllAssociatedComments(String userName, UUID jobId){
+	public List<NoteComment> findAllAssociatedComments(String userName, UUID jobId, boolean jobFinished){
 		
 		UserJobAssignment uja = entityManager.find(UserJobAssignment.class, new UserJobAssignmentPK(userName, jobId));
 		
 		List<NoteComment> noteComments = findAllComments(uja);
-		List<NoteComment> notes = findAllNotes(userName, jobId);
 		
-		noteComments.addAll(notes);
+		if(!jobFinished){
+			List<NoteComment> notes = findAllNotes(userName, jobId);
+			noteComments.addAll(notes);
+		}
 		
 		return noteComments;
 	}

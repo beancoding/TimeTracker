@@ -40,6 +40,7 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 	private String noteText;
 	private String commentText;
 	private List<NoteComment> noteComments;
+	private boolean finished;
 	
 	@Autowired
 	public JobTimeEntryControllerBean(JobDAO jobDAO, TimeEntryDAO timeEntryDAO,	UserJobAssignmentDAO userJobAssignmentDAO, NoteDAO noteDAO, SysUserDAO sysUserDAO) {
@@ -53,6 +54,7 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 	
 	public Job getJob() {
 
+		noteComments = null;
 		refreshJob();
 		return job;
 	}
@@ -91,6 +93,11 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 			entry.setEndTime(Calendar.getInstance());
 			timeEntryDAO.update(entry);
 			inProgress = false;
+			if(finished){
+				
+				job.setFinished(finished);
+				jobDAO.updateJobFinished(job);
+			}
 		}
 			
 		return "this";
@@ -112,7 +119,7 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 	
 		if(job == null) refreshJob();
 		if(noteComments == null)
-			noteComments = userJobAssignmentDAO.findAllAssociatedComments(getUsername(), job.getJobId());
+			noteComments = userJobAssignmentDAO.findAllAssociatedComments(getUsername(), job.getJobId(), this.finished);
 		return noteComments;
 	}
 
@@ -165,5 +172,15 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 		NoteComment noteComment = new NoteComment(commentText, entry.getStartTime(), entry.getEndTime());
 		noteComments.add(noteComment);
 		commentText = "";
+	}
+
+	public boolean isFinished() {
+		
+		if(job == null) refreshJob();
+		finished = job.isFinished();
+		return finished;
+	}
+	public void setFinished(boolean finished) {
+		this.finished = finished;
 	}
 }

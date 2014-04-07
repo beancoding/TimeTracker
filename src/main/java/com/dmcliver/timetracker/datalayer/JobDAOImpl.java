@@ -66,4 +66,12 @@ public class JobDAOImpl implements JobDAO {
 		
 		entityManager.persist(userJobAssignment);
 	}
+
+	@Transactional
+	public void updateJobFinished(Job job) {
+		
+		Job j = entityManager.find(Job.class, job.getJobId());
+		j.setFinished(job.isFinished());
+		entityManager.merge(j);
+	}
 }

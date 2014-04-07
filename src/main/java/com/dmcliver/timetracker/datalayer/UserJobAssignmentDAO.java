@@ -8,6 +8,6 @@ import com.dmcliver.timetracker.domain.NoteComment;
 public interface UserJobAssignmentDAO {
 
 	public abstract List<NoteComment> findAllAssociatedComments(
-			String userName, UUID jobId);
+			String userName, UUID jobId, boolean jobFinished);
 
 }

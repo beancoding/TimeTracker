@@ -11,4 +11,5 @@ public interface JobDAO {
 	public abstract void save(Job job);
 	public abstract void save(UserJobAssignment userJobAssignment);
 	public abstract Job findByName(String jobName);
+	public abstract void updateJobFinished(Job job);
 }

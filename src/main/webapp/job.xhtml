@@ -60,8 +60,14 @@
 			<p:dialog id="basicDialog" header="Add note (optional):" widgetVar="dlg1" modal="true">
 				<h:form id="dialogForm">
 				    
+				    <p:message for="comment"/>
 				    <h:outputText value="Add note (optional):" />
-				    <h:inputTextarea id="comment" value="#{jobTimeEntryControllerBean.commentText}" />
+				    
+   				    <br/>
+				    
+				    <h:inputTextarea rows="4" cols="37" id="comment" value="#{jobTimeEntryControllerBean.commentText}" required="true" requiredMessage="The note must contain content"/>
+				    
+				    <br/>
 				    
 				    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				    

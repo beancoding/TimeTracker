@@ -81,6 +81,7 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 		if(!inProgress){
 			
 			TimeEntry entry = new TimeEntry();
+			if(job == null) refreshJob();
 			timeEntryDAO.save(entry, super.getUsername(), job.getJobId());
 			inProgress = true;
 		}
@@ -135,6 +136,7 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 		noteDAO.save(note);
 		
 		noteComments.add(new NoteComment(noteText));
+		noteText = "";
 		return "this";
 	}
 
@@ -147,9 +149,21 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 	
 	public String addComment(){
 		
-		//TODO: implement add comments
-		NoteComment nc = new NoteComment("abc", Calendar.getInstance(), Calendar.getInstance());
-		noteComments.add(nc);
+		if(job == null) refreshJob();
+		
+		TimeEntry entry = timeEntryDAO.findLastEntryForUser(super.getUsername(), job.getJobId());
+		entry.setEntryComments(commentText);
+		timeEntryDAO.update(entry);
+		
+		createAndUpdateNoteComments(entry);
+		
 		return "this";
+	}
+
+	private void createAndUpdateNoteComments(TimeEntry entry) {
+		
+		NoteComment noteComment = new NoteComment(commentText, entry.getStartTime(), entry.getEndTime());
+		noteComments.add(noteComment);
+		commentText = "";
 	}
 }

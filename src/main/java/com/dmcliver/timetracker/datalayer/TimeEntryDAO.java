@@ -12,4 +12,5 @@ public interface TimeEntryDAO {
 	public abstract TimeEntry findLastEntryForUser(String user);
 	public abstract void update(TimeEntry entry);
 	public abstract List<TimeDifferential> findTotalTimeForUsersJob(String userName, UUID jobId);
+	public abstract TimeEntry findLastEntryForUser(String username, UUID jobId);
 }

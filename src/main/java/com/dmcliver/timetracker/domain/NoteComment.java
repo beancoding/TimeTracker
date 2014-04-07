@@ -15,7 +15,7 @@ public class NoteComment {
 		this.content = content;
 		this.start = start;
 		this.end = end;
-		formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm a");
+		formatter = new SimpleDateFormat("dd/MM/yy hh:mm a");
 	}
 
 	public NoteComment(String content) {

@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.ejb.criteria.OrderImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,18 +82,44 @@ public class TimeEntryDAOImpl implements TimeEntryDAO {
 		Join<UserJobAssignment, SysUser> u = uja.join("sysUser");
 		Join<UserJobAssignment, Job> j = uja.join("job");
 		
-		query.multiselect(te.get("startTime"), te.get("endTime")).where(
+		query.multiselect(te.get("startTime"), te.get("endTime"))
+			 .where(
 			
-			criteria.and(
 				criteria.and(
-						
+	
 					criteria.equal(u.get("userName"), userName),
-					criteria.equal(j.get("jobId"), jobId)
-				),
-				criteria.notEqual(te.get("endTime"), criteria.nullLiteral(Calendar.class)) 
+					criteria.equal(j.get("jobId"), jobId),
+					criteria.notEqual(te.get("endTime"), criteria.nullLiteral(Calendar.class)) 
 			)
 		);
 		
 		return entityManager.createQuery(query).getResultList();
+	}
+
+	@Override
+	public TimeEntry findLastEntryForUser(String username, UUID jobId) {
+		
+		CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
+		CriteriaQuery<TimeEntry> query = criteria.createQuery(TimeEntry.class);
+		
+		Root<TimeEntry> te = query.from(TimeEntry.class);
+		
+		Join<TimeEntry, UserJobAssignment> uja = te.join("userJobAssignment");
+		Join<UserJobAssignment, SysUser> u = uja.join("sysUser");
+		Join<UserJobAssignment, Job> j = uja.join("job");
+		
+		query.select(te)
+			 .where(
+				
+				criteria.and(
+		
+					criteria.equal(u.get("userName"), username),
+					criteria.equal(j.get("jobId"), jobId),
+					criteria.notEqual(te.get("endTime"), criteria.nullLiteral(Calendar.class)) 
+				)
+			).orderBy(new OrderImpl(te.get("endTime"), false));
+		
+		TimeEntry timeEntry = entityManager.createQuery(query).setMaxResults(1).getResultList().get(0);
+		return timeEntry;
 	}
 }

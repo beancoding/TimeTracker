@@ -6,22 +6,19 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
-
-	<h:head>
-		<title>Jobs</title>
-		<script type="text/javascript">
-			function showDialogOnStop(el){
-				if(el.innerText.indexOf("Stop") != -1)
-					PF('dlg1').show();
-			}
-			function hideDialogOnComplete(args){
-				if (args &amp;&amp; !args.validationFailed) 
-					PF('dlg1').hide();
-			}
-		</script>
-	</h:head>
 	
 	<h:body>
+	
+		<ui:composition template="/template.xhtml">
+		
+		<ui:define name="title">Job view</ui:define>
+		
+		<ui:define name="links">
+			<h:outputScript library="scripts" name="CommentDialog.js"></h:outputScript>
+		</ui:define>
+		
+		<ui:define name="content">
+		
 		<p:panel>
 		
 			<h:form id="form1">
@@ -32,11 +29,11 @@
 				
 				<div style="float:right">
 					<h3></h3>
-					<h3><span>Estimate: <h:outputText id="estimateVal" value="#{jobTimeEntryControllerBean.job.estimate}"/></span><span style="margin-left:35px">Time elapsed: <h:outputText value="#{jobTimeEntryControllerBean.timeElapsed}"/></span></h3>
+					<h3><span>Estimate: <h:outputText value="#{jobTimeEntryControllerBean.job.estimate}"/></span><span style="margin-left:35px">Time elapsed: <h:outputText id="timeElapsedTagEl" value="#{jobTimeEntryControllerBean.timeElapsed}"/></span></h3>
 				</div>
 				
 				<div style="clear:left">
-					<p:commandButton rendered="#{not jobTimeEntryControllerBean.finished}" onclick="javascript:showDialogOnStop(this)" value="#{jobTimeEntryControllerBean.inProgress?'Stop':'Start'}" action="#{jobTimeEntryControllerBean.updateTime}" update="@this,:form1:estimateVal"/>
+					<p:commandButton rendered="#{not jobTimeEntryControllerBean.finished}" onclick="javascript:showDialogOnStop(this)" value="#{jobTimeEntryControllerBean.inProgress?'Stop':'Start'}" action="#{jobTimeEntryControllerBean.updateTime}" update="@this,:form1:timeElapsedTagEl"/>
 					<span style="float:right;clear:right"><h3 style="display:inline">Finished</h3><h:selectBooleanCheckbox disabled="#{jobTimeEntryControllerBean.finished}" value="#{jobTimeEntryControllerBean.finished}" /></span>
 				</div>
 				
@@ -99,6 +96,11 @@
 			</h:form>
 			
 		</p:panel>
+		
+		</ui:define>
+		
+		</ui:composition>
+		
 	</h:body>
 
 </html>

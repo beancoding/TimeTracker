@@ -1,5 +1,6 @@
 package com.dmcliver.timetracker.controller;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
@@ -103,14 +104,14 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 		return "this";
 	}
 	
-	public double getTimeElapsed(){
+	public BigDecimal getTimeElapsed(){
 		
 		if(job == null) refreshJob();
 		List<TimeDifferential> totalTime = timeEntryDAO.findTotalTimeForUsersJob(getUsername(), job.getJobId());
 		
-		double total = 0;
+		BigDecimal total = new BigDecimal(0);
 		for (TimeDifferential timeDifferential : totalTime) {
-			total += timeDifferential.getDiff();
+			total = total.add(timeDifferential.getDiff());
 		}		
 		return total;
 	}

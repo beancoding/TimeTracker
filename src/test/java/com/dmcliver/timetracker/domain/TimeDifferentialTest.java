@@ -1,5 +1,6 @@
 package com.dmcliver.timetracker.domain;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 
 import org.junit.Assert;
@@ -36,7 +37,7 @@ public class TimeDifferentialTest {
 		future.add(Calendar.MINUTE, diff.getMinuteOffset());
 		
 		TimeDifferential timeDiff = new TimeDifferential(now, future);
-		double result = timeDiff.getDiff();
+		BigDecimal result = timeDiff.getDiff();
 		
 		Assert.assertThat(result, is(diff.getExpectedDiff()));
 	}
@@ -55,7 +56,7 @@ class Diff{
 	public int getMinuteOffset() {
 		return minuteOffset;
 	}
-	public double getExpectedDiff() {
-		return expectedDiff;
+	public BigDecimal getExpectedDiff() {
+		return new BigDecimal(expectedDiff).setScale(2, BigDecimal.ROUND_HALF_UP);
 	}
 }

@@ -1,5 +1,6 @@
 package com.dmcliver.timetracker.domain;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 
 public class TimeDifferential {
@@ -14,25 +15,30 @@ public class TimeDifferential {
 		this.end = end;
 	}
 	
-	public double getDiff(){
+	public BigDecimal getDiff(){
 		
 		long endTime = end.getTimeInMillis();
 		long startTime = start.getTimeInMillis();
 		
 		long diff = endTime - startTime;
 		
-		long hours= diff / hourDiv;
+		long hours = diff / hourDiv;
 		
-		double minutes = calculateMinutes(diff, hours);
+		BigDecimal minutes = calculateMinutes(diff, hours);
 		
-		return hours + minutes;
+		return toDec(hours).add(minutes);
 	}
 
-	private double calculateMinutes(long diff, long hours) {
+	private BigDecimal calculateMinutes(long diff, long hours) {
 		
-		double minutes = diff - hours * hourDiv;
-		minutes = minutes / hourDiv;
-		minutes = Math.round(minutes * 10) / 10.0;
+		BigDecimal minutes = toDec(diff - hours * hourDiv);
+		minutes = minutes.divide(toDec(hourDiv), BigDecimal.ROUND_HALF_UP);
+		minutes = toDec(Math.round(minutes.doubleValue() * 10)).divide(toDec(10.0), BigDecimal.ROUND_HALF_UP);
 		return minutes;
+	}
+	
+	private BigDecimal toDec(double d){
+		
+		return new BigDecimal(d).setScale(2);
 	}
 }

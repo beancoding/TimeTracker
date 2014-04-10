@@ -1,10 +1,12 @@
 package com.dmcliver.timetracker.domain;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class TimeDifferential {
 
+	private String job = "";
 	private Calendar start;
 	private Calendar end;
 	private final long hourDiv = 1000 * 60 * 60;
@@ -13,6 +15,21 @@ public class TimeDifferential {
 		
 		this.start = start;
 		this.end = end;
+	}
+
+	public TimeDifferential(String job, Calendar start, Calendar end) {
+		
+		this.job = job;
+		this.start = start;
+		this.end = end;
+	}
+	
+	public String getJob(){
+		return job;
+	}
+	
+	public String getDay(){
+		return new SimpleDateFormat("dd/MM/yy").format(start.getTime());
 	}
 	
 	public BigDecimal getDiff(){

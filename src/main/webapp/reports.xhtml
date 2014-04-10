@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/template.xhtml">
+	
+	<ui:define name="title">Reports</ui:define>
+	
+	<ui:define name="content">
+	    <p:panel>
+	    	<h:form id="reportForm">
+	    	
+		    	<div style="display:inline">
+		    		Start Date:<p:calendar value="#{calendarControllerBean.startDate}"></p:calendar>
+		    	</div>
+		    
+		    	<div style="float:right;margin-top:-3px">
+		    		End Date:
+		    		<p:calendar value="#{calendarControllerBean.stopDate}"></p:calendar>
+		    		<p:commandButton action="#{calendarControllerBean.viewReport}" update=":reportForm:reportTable" value="Go"/>	
+		    	</div>
+		    	
+		    	<br/>
+		    	
+		    	<p:dataTable style="margin-top:10px" id="reportTable" widgetVar="jobsTable" filteredValue="#{calendarControllerBean.filteredData}" value="#{calendarControllerBean.dateAndTimeForJob}" var="dateTimeJob">
+	    	        
+	    	        <f:facet name="header">
+			            <p:outputPanel>
+			                <h:outputText value="Search jobs: " />
+			                <p:inputText id="globalFilter" onkeyup="jobsTable.filter()"  />
+			            </p:outputPanel>
+			        </f:facet>
+			        
+		    		<p:column headerText="Job" >
+		    			<h:outputText value="#{dateTimeJob.job}" />
+		    		</p:column>
+		    		<p:column style="width:150px" headerText="day">
+		    			<h:outputText value="#{dateTimeJob.day}" />
+		    		</p:column>
+		    		<p:column style="width:120px" headerText="diff">
+		    			<h:outputText value="#{dateTimeJob.diff}" />
+		    		</p:column>
+		    		
+		    	</p:dataTable>
+		    	
+		    	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+		    	
+	    	</h:form>
+	    </p:panel>
+	</ui:define>
+	
+</ui:composition>
+
+</html>

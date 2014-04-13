@@ -30,17 +30,17 @@ public class UserJobAssignmentDAOImpl implements UserJobAssignmentDAO {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	private UserJobAssignment ujaProx = from(UserJobAssignment.class);
-	private TimeEntry teProx = from(TimeEntry.class);
-	private Job jProx = from(Job.class);
-	private SysUser uProx = from(SysUser.class);
+	private UserJobAssignment uja = from(UserJobAssignment.class);
+	private TimeEntry te = from(TimeEntry.class);
+	private Job j = from(Job.class);
+	private SysUser u = from(SysUser.class);
 	
 	@Override
 	public List<NoteComment> findAllAssociatedComments(String userName, UUID jobId, boolean jobFinished){
 		
-		UserJobAssignment uja = entityManager.find(UserJobAssignment.class, new UserJobAssignmentPK(userName, jobId));
+		UserJobAssignment ujaJPQ = entityManager.find(UserJobAssignment.class, new UserJobAssignmentPK(userName, jobId));
 		
-		List<NoteComment> noteComments = findAllComments(uja);
+		List<NoteComment> noteComments = findAllComments(ujaJPQ);
 		
 		if(!jobFinished){
 			List<NoteComment> notes = findAllNotes(userName, jobId);
@@ -55,16 +55,16 @@ public class UserJobAssignmentDAOImpl implements UserJobAssignmentDAO {
 		CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
 		CriteriaQuery<NoteComment> query = criteria.createQuery(NoteComment.class);
 		
-		Root<Note> n = query.from(Note.class);
-		Join<Note, SysUser> u = n.join("user");
-		Join<Note, Job> j = n.join("job");
+		Root<Note> nJPQ = query.from(Note.class);
+		Join<Note, SysUser> uJPQ = nJPQ.join("user");
+		Join<Note, Job> jobJPQ = nJPQ.join("job");
 		
-		query.multiselect(n.get("content"))
+		query.multiselect(nJPQ.get("content"))
 			 .where(
 				 criteria.and(
-					 criteria.equal(j.get("jobId"), jobId),
-					 criteria.equal(u.get("userName"), userName),
-					 criteria.notEqual(n.get("content"), criteria.nullLiteral(String.class))
+					 criteria.equal(jobJPQ.get("jobId"), jobId),
+					 criteria.equal(uJPQ.get("userName"), userName),
+					 criteria.notEqual(nJPQ.get("content"), criteria.nullLiteral(String.class))
 				 )
 			 );
 		
@@ -72,17 +72,17 @@ public class UserJobAssignmentDAOImpl implements UserJobAssignmentDAO {
 		return resultList;
 	}
 
-	private List<NoteComment> findAllComments(UserJobAssignment uja) {
+	private List<NoteComment> findAllComments(UserJobAssignment ujaJPQ) {
 		
 		CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
 		CriteriaQuery<NoteComment> query = criteria.createQuery(NoteComment.class);
 		
-		Root<TimeEntry> te = query.from(TimeEntry.class);
-		query.multiselect(te.get("entryComments"), te.get("startTime"), te.get("endTime"))
+		Root<TimeEntry> teJPQ = query.from(TimeEntry.class);
+		query.multiselect(teJPQ.get("entryComments"), teJPQ.get("startTime"), teJPQ.get("endTime"))
 			 .where(
 				 criteria.and(
-					 criteria.notEqual(te.get("entryComments"), criteria.nullLiteral(String.class)),
-					 criteria.equal(te.get("userJobAssignment"), uja)
+					 criteria.notEqual(teJPQ.get("entryComments"), criteria.nullLiteral(String.class)),
+					 criteria.equal(teJPQ.get("userJobAssignment"), ujaJPQ)
 				 )
 			 );
 		
@@ -96,32 +96,32 @@ public class UserJobAssignmentDAOImpl implements UserJobAssignmentDAO {
 		CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
 		CriteriaQuery<TimeDifferential> query = criteria.createQuery(TimeDifferential.class);
 		
-		Root<TimeEntry> te = query.from(TimeEntry.class);
+		Root<TimeEntry> teJPQ = query.from(TimeEntry.class);
 		
-		
-		
-		Join<TimeEntry, UserJobAssignment> uja = te.join(toStr(teProx.getUserJobAssignment()));
-		Join<UserJobAssignment, SysUser> u = uja.join(toStr(ujaProx.getSysUser()));
-		Join<UserJobAssignment, Job> j = uja.join(toStr(ujaProx.getJob()));
+		Join<TimeEntry, UserJobAssignment> ujaJPQ = teJPQ.join(toStr(te.getUserJobAssignment()));
+		Join<UserJobAssignment, SysUser> uJPQ = ujaJPQ.join(toStr(uja.getSysUser()));
+		Join<UserJobAssignment, Job> jobJPQ = ujaJPQ.join(toStr(uja.getJob()));
 		
 		query.multiselect(
 				
-				j.get(toStr(jProx.getJobName())), 
-				te.get(toStr(teProx.getStartTime())), 
-				te.get(toStr(teProx.getEndTime()))
+				jobJPQ.get(toStr(j.getJobName())), 
+				teJPQ.get(toStr(te.getStartTime())), 
+				teJPQ.get(toStr(te.getEndTime()))
 			 )
 			 .where(
 				 criteria.and(
 					
-					 criteria.equal(u.get(toStr(uProx.getUserName())), username),
-					 criteria.notEqual(j.get(toStr(jProx.isFinished())), true),
-					 criteria.notEqual(te.get(toStr(teProx.getEndTime())), criteria.nullLiteral(Calendar.class))
+					 criteria.equal(uJPQ.get(toStr(u.getUserName())), username),
+					 criteria.notEqual(jobJPQ.get(toStr(j.isFinished())), true),
+					 criteria.notEqual(teJPQ.get(toStr(te.getEndTime())), criteria.nullLiteral(Calendar.class)),
+					 criteria.greaterThanOrEqualTo(teJPQ.<Calendar>get(toStr(te.getStartTime())), startCal),
+					 criteria.lessThan(teJPQ.<Calendar>get(toStr(te.getEndTime())), endCal)
 				 )
 			 )
 			 .orderBy(
 		
-				 new OrderImpl(te.get(toStr(teProx.getStartTime())), false), 
-				 new OrderImpl(j.get("jobName"), true)
+				 new OrderImpl(teJPQ.get(toStr(te.getStartTime())), false), 
+				 new OrderImpl(jobJPQ.get(toStr(j.getJobName())), true)
 			 );
 		
 		return entityManager.createQuery(query).getResultList();

@@ -25,6 +25,7 @@ public class CalendarControllerBean extends ControllerBeanBase{
 	
 	@Autowired
 	private UserJobAssignmentDAO dao;
+	private List<TimeDifferential> reportData;
 	
 	public Date getStartDate() {
 		return startDate;
@@ -49,13 +50,15 @@ public class CalendarControllerBean extends ControllerBeanBase{
 		endCal.setTime(stopDate);
 		endCal.add(Calendar.DAY_OF_MONTH, 1);
 		
-		dao.findAllEntriesForRange(super.getUsername(), startCal, endCal);
+		reportData = dao.findAllEntriesForRange(super.getUsername(), startCal, endCal);
 		return "";
 	}
 	
 	public List<TimeDifferential> getDateAndTimeForJob(){
 		
-		return new ArrayList<TimeDifferential>();
+		if(reportData == null)
+			new ArrayList<TimeDifferential>();
+		return reportData;
 	}
 	
 	public List<TimeDifferential> getFilteredData() {

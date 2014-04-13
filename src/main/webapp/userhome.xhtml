@@ -30,16 +30,16 @@
 			             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
 			             paginatorPosition="bottom">
 							
-								<p:column headerText="Jobs" sortBy="jobName">
-									<h:outputText value="#{j.jobName}"/>
-								</p:column>
-								
-								<p:column style="width:50px" sortBy="finished">
-									<h:outputLink value="job.dhtml" >
-										<h:outputText value="#{j.finished ? 'View' : 'Start'}"/>
-										<f:param name="jobName" value="#{j.jobName}" />
-									</h:outputLink>
-								</p:column>
+							<p:column headerText="Jobs" filterBy="jobName" sortBy="jobName" >
+								<h:outputText value="#{j.jobName}"/>
+							</p:column>
+							
+							<p:column style="width:50px" sortBy="finished">
+								<h:outputLink value="job.dhtml" >
+									<h:outputText value="#{j.finished ? 'View' : 'Start'}"/>
+									<f:param name="jobName" value="#{j.jobName}" />
+								</h:outputLink>
+							</p:column>
 								
 						</p:dataTable>
 					

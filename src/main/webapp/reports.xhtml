@@ -27,14 +27,10 @@
 		    	
 		    	<br/>
 		    	
-		    	<p:dataTable style="margin-top:10px" id="reportTable" widgetVar="jobsTable" filteredValue="#{calendarControllerBean.filteredData}" value="#{calendarControllerBean.dateAndTimeForJob}" var="dateTimeJob">
-	    	        
-	    	        <f:facet name="header">
-			            <p:outputPanel>
-			                <h:outputText value="Search jobs: " />
-			                <p:inputText id="globalFilter" onkeyup="jobsTable.filter()"  />
-			            </p:outputPanel>
-			        </f:facet>
+		    	<p:dataTable style="margin-top:10px" id="reportTable" value="#{calendarControllerBean.dateAndTimeForJob}" var="dateTimeJob"
+				 paginator="true" rows="10"
+	             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+	             paginatorPosition="bottom">
 			        
 		    		<p:column headerText="Job" >
 		    			<h:outputText value="#{dateTimeJob.job}" />

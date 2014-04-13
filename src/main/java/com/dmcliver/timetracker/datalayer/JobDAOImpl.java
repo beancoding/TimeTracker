@@ -22,19 +22,20 @@ public class JobDAOImpl implements JobDAO {
 	private EntityManager entityManager;
 
 	@Override
+	@Transactional
 	public Job findByName(String jobName) {
 
 		CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Job> query = criteria.createQuery(Job.class);
 		
 		Root<Job> j = query.from(Job.class);
-		query.select(j).where(criteria.equal(j.get("jobName"), jobName));
+		query.select(j).where(criteria.equal(criteria.lower(j.<String>get("jobName")), jobName.toLowerCase()));
 		
-		Job job = entityManager.createQuery(query)
+		List<Job> result = entityManager.createQuery(query)
 							   .setMaxResults(1)
-							   .getResultList()
-							   .get(0);
-		return job;
+							   .getResultList();
+							   
+		return result.size() > 0 ? result.get(0) : null;
 	}
 	
 	@Override

@@ -3,12 +3,9 @@ package com.dmcliver.timetracker.controller;
 import java.util.List;
 import java.util.UUID;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import static com.dmcliver.timetracker.TimeTrackerConstants.*;
@@ -33,6 +30,7 @@ public class HomeControllerBean extends ControllerBeanBase {
 	
 	private List<Note> notes;
 	private List<Job> jobs;
+	private List<Job> filteredData;
 	private String noteContent;
 	private String jobName;
 	private double estimate;
@@ -86,6 +84,21 @@ public class HomeControllerBean extends ControllerBeanBase {
 	}
 	
 	/* Data manipulation */
+	public String addJob(){
+		
+		if(checkIfAssignedJobForUserExists())
+			return "this";
+		
+		UUID jobId = UUID.randomUUID();
+		
+		Job job = materializeJob(jobId);
+		assignJobToUser(jobId, job);
+		
+		clearFields();
+		
+		return "this";
+	}
+	
 	public String addNote(){
 		
 		Note n = new Note(noteContent);
@@ -104,31 +117,52 @@ public class HomeControllerBean extends ControllerBeanBase {
 		return "this";
 	}
 
-	public String addJob(){
+	/* Data manipulation helper methods */
+	private boolean checkIfAssignedJobForUserExists() {
 		
-		UUID jobId = UUID.randomUUID();
-		Job job = new Job(jobName, estimate, jobId);
-		
-		try{
-			jobDAO.save(job);
-		}
-		catch(DataIntegrityViolationException ex){
+		for (Job j : jobs) {
 			
-			FacesContext.getCurrentInstance().addMessage("UniqueJobnameViolation", new FacesMessage(FacesMessage.SEVERITY_ERROR, "The job name must be unique", ""));
-			return "this";
+			if(j.getJobName().equals(jobName)){
+				
+				super.addError("UniqueJobnameViolation", "There is already a job with this name assigned to you");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private Job materializeJob(UUID jobId) {
+		
+		Job job = jobDAO.findByName(jobName);
+		if(job == null){
+			
+			job = new Job(jobName, estimate, jobId);
+			jobDAO.save(job);
 		}
 		
 		jobs.add(job);
+		return job;
+	}
+	
+	private void assignJobToUser(UUID jobId, Job job) {
 		
 		String username = super.getUsername();
 		SysUser user = sysUserDAO.findByUsername(username);
 		
 		UserJobAssignment userJobAssignment = new UserJobAssignment(new UserJobAssignmentPK(username, jobId), user, job);
 		jobDAO.save(userJobAssignment);
+	}
+	
+	private void clearFields() {
 		
 		jobName = emptyString;
 		estimate = 0;
-		
-		return "this";
+	}
+
+	public List<Job> getFilteredData() {
+		return filteredData;
+	}
+	public void setFilteredData(List<Job> filteredData) {
+		this.filteredData = filteredData;
 	}
 }

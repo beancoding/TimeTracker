@@ -1,9 +1,6 @@
 package com.dmcliver.timetracker;
 
 import java.lang.reflect.Method;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -14,6 +11,7 @@ public class QueryUtils {
 	
 		private static String methName;
 		
+		@SuppressWarnings("unchecked")
 		public static <T> T from(Class<T> classType){
 		
 			Object proxied= Enhancer.create(classType, new MethodInterceptor(){
@@ -26,12 +24,18 @@ public class QueryUtils {
 				}			
 			});
 			
-			return (T)proxied;
+			try{			
+				return (T)proxied;
+			}
+			catch(Exception ex){
+				return null;
+			}
 		}
 		
 		/**
-		 * usage:<br/>
-		 * String propName = toStr(from(Person.class).getName()) <br/>
+		 * Converts a property to a string. <br/>
+		 * Usage:
+		 * {@code String propName = toStr(from(Person.class).getName());} <br/>
 		 * The result would be that propName would have the value "name"
 		 */
 		public static String toStr(Object getMethod){

@@ -122,7 +122,7 @@ public class HomeControllerBean extends ControllerBeanBase {
 		
 		for (Job j : jobs) {
 			
-			if(j.getJobName().equals(jobName)){
+			if(j.getJobName().toLowerCase().equals(jobName.toLowerCase())){
 				
 				super.addError("UniqueJobnameViolation", "There is already a job with this name assigned to you");
 				return true;

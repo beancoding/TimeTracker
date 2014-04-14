@@ -112,7 +112,6 @@ public class UserJobAssignmentDAOImpl implements UserJobAssignmentDAO {
 				 criteria.and(
 					
 					 criteria.equal(uJPQ.get(toStr(u.getUserName())), username),
-					 criteria.notEqual(jobJPQ.get(toStr(j.isFinished())), true),
 					 criteria.notEqual(teJPQ.get(toStr(te.getEndTime())), criteria.nullLiteral(Calendar.class)),
 					 criteria.greaterThanOrEqualTo(teJPQ.<Calendar>get(toStr(te.getStartTime())), startCal),
 					 criteria.lessThan(teJPQ.<Calendar>get(toStr(te.getEndTime())), endCal)

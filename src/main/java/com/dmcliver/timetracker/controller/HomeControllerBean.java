@@ -3,8 +3,10 @@ package com.dmcliver.timetracker.controller;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,8 +43,14 @@ public class HomeControllerBean extends ControllerBeanBase {
 		this.noteDAO = noteDAO;
 		this.sysUserDAO = sysUserDAO;
 		this.jobDAO = jobDAO;
+		jobs = null;
 	}
 
+	@PostConstruct
+	public void fuckJobs(){
+		jobs=null;
+	}
+	
 	/* Properties */
 	public String getNoteContent() {
 		return noteContent;
@@ -78,14 +86,19 @@ public class HomeControllerBean extends ControllerBeanBase {
 	public List<Job> getJobs() {
 		
 		if(jobs == null)
-			jobs = jobDAO.findAllForUser(super.getUsername());
+			refreshJobs();
 		
 		return jobs;
+	}
+
+	private void refreshJobs() {
+		jobs = jobDAO.findAllForUser(super.getUsername());
 	}
 	
 	/* Data manipulation */
 	public String addJob(){
 		
+		refreshJobs();
 		if(checkIfAssignedJobForUserExists())
 			return "this";
 		
@@ -164,5 +177,11 @@ public class HomeControllerBean extends ControllerBeanBase {
 	}
 	public void setFilteredData(List<Job> filteredData) {
 		this.filteredData = filteredData;
+	}
+	
+	public boolean isJobFinished(Job j){
+		
+		Job job = jobDAO.findByName(j.getJobName());
+		return job.isFinished();
 	}
 }

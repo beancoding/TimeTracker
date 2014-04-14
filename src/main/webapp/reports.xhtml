@@ -28,17 +28,17 @@
 		    	<br/>
 		    	
 		    	<p:dataTable style="margin-top:10px" id="reportTable" value="#{calendarControllerBean.dateAndTimeForJob}" var="dateTimeJob"
-				 paginator="true" rows="10"
-	             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-	             paginatorPosition="bottom">
+				   paginator="true" rows="10" sortMode="multiple" 
+	               paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+	               paginatorPosition="bottom">
 			        
-		    		<p:column headerText="Job" >
+		    		<p:column headerText="Job" sortBy="job">
 		    			<h:outputText value="#{dateTimeJob.job}" />
 		    		</p:column>
-		    		<p:column style="width:150px" headerText="day">
+		    		<p:column style="width:150px" headerText="day" sortBy="day">
 		    			<h:outputText value="#{dateTimeJob.day}" />
 		    		</p:column>
-		    		<p:column style="width:120px" headerText="diff">
+		    		<p:column style="width:120px" headerText="diff" sortBy="diff">
 		    			<h:outputText value="#{dateTimeJob.diff}" />
 		    		</p:column>
 		    		

@@ -9,6 +9,7 @@
 	Redirecting...  
 </h1>
 
-	<% response.sendRedirect("/timetracker/userhome.dhtml"); %>
+	<% response.sendRedirect(request.getContextPath() + "/userhome.dhtml"); %>
+
 </body>
 </html>

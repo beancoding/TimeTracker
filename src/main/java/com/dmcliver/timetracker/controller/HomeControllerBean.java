@@ -45,11 +45,6 @@ public class HomeControllerBean extends ControllerBeanBase {
 		this.jobDAO = jobDAO;
 		jobs = null;
 	}
-
-	@PostConstruct
-	public void fuckJobs(){
-		jobs=null;
-	}
 	
 	/* Properties */
 	public String getNoteContent() {

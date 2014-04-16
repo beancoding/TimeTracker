@@ -11,9 +11,12 @@ function hideDialogOnComplete(args) {
 	if (args && !args.validationFailed) 
 		PF('dlg1').hide();
 	
-	var btn = $("#form1:toggleButtonId");
+	var btn = document.getElementById("form1:toggleButtonId");
+	var chckBox = document.getElementById("form1:finishedCheckboxId");
 	
-	if( btn.text().indexOf("Stop") != -1 && $("#form1:finishedCheckboxId").prop("disabled"))
-		btn.hide();
+	var jBtn = $(btn);
+	
+	if( jBtn.text().indexOf("Stop") != -1 && $(chckBox).prop("disabled"))
+		jBtn.hide();
 }
 

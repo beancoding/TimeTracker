@@ -83,7 +83,7 @@ public class AccountController {
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout(HttpServletRequest request){
 		
-		request.getSession(false).invalidate();;
+		request.getSession(false).invalidate();
 		return "/";
 	}
 }

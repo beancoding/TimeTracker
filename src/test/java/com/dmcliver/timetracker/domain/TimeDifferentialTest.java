@@ -1,7 +1,13 @@
 package com.dmcliver.timetracker.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.experimental.theories.DataPoints;
@@ -40,6 +46,22 @@ public class TimeDifferentialTest {
 		BigDecimal result = timeDiff.getDiff();
 		
 		Assert.assertThat(result, is(diff.getExpectedDiff()));
+	}
+	
+	public void group(){
+		
+		ArrayList<TimeDifferential> diffs = new ArrayList<TimeDifferential>();
+		Map<String, ReportSummary> reportData= new HashMap<String, ReportSummary>();
+		
+		for (TimeDifferential timeDiff : diffs) {
+			
+			if(reportData.containsKey(timeDiff.toString()))
+				reportData.get(timeDiff.toString()).add(timeDiff.getDiff());
+			else
+				reportData.put(timeDiff.toString(), new ReportSummary(timeDiff.getJob(),timeDiff.getDay(),timeDiff.getDiff()));
+		}
+		
+		new ArrayList<ReportSummary>(reportData.values());
 	}
 }
 

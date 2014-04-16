@@ -21,9 +21,16 @@
 <div id="content">
 	
 	<div style="width:960px;margin-left:auto;margin-right:auto">
-  		<ui:insert name="content">
-
-  		</ui:insert>
+		<div>
+			<p:panel>
+				<h:link style="position:relative;top:4px;" outcome="userhome"><p:graphicImage value="resources/images/icon-uvodni.png" width="32px"/></h:link>
+				<span style="position:relative;left:-30px;top:7px;bottom:-7px;float:right">Welcome <h:outputText value="#{request.userPrincipal.name}" />&nbsp;</span>
+				<span style="float:right;clear:right"><h:outputLink value="logout" style="text-decoration:none"><p:graphicImage style="margin-top:-15px;margin-bottom:15px" value="resources/images/logout-xl.png" width="24px"/></h:outputLink></span>
+			</p:panel>
+		</div>	
+		
+  		<ui:insert name="content"></ui:insert>
+		
 		<div>
 			<p:panel>
 				Written by Daniel Mcliver using Linux, JSF, Spring MVC, Hibernate (JPA) and Oracle 11g.

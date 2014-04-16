@@ -3,7 +3,9 @@ package com.dmcliver.timetracker.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -12,20 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dmcliver.timetracker.datalayer.UserJobAssignmentDAO;
+import com.dmcliver.timetracker.domain.ReportSummary;
 import com.dmcliver.timetracker.domain.TimeDifferential;
 
 @Component
 @ManagedBean
 @RequestScoped
 public class CalendarControllerBean extends ControllerBeanBase{
-
-	private Date startDate = new Date();
-	private Date stopDate = new Date();
-	private List<TimeDifferential> filteredData;
 	
 	@Autowired
 	private UserJobAssignmentDAO dao;
-	private List<TimeDifferential> reportData;
+
+	private Date startDate = new Date();
+	private Date stopDate = new Date();
+	private List<ReportSummary> filteredData;
+	private List<ReportSummary> reportData;
 	
 	public Date getStartDate() {
 		return startDate;
@@ -41,30 +44,59 @@ public class CalendarControllerBean extends ControllerBeanBase{
 		this.stopDate = stopDate;
 	}
 	
+	public List<ReportSummary> getFilteredData() {
+		return filteredData;
+	}
+	public void setFilteredData(List<ReportSummary> filteredData) {
+		this.filteredData = filteredData;
+	}
+	
+	public List<ReportSummary> getDateAndTimeForJob(){
+		
+		if(reportData == null)
+			new ArrayList<ReportSummary>();
+		return reportData;
+	}
+	
 	public String viewReport(){
+		
+		Calendar startCal = setStartCalendarDate();
+		Calendar endCal = setEndCalendarDate();
+		
+		List<TimeDifferential> foundReportData = dao.findAllEntriesForRange(super.getUsername(), startCal, endCal);
+		
+		aggregateData(foundReportData);
+		
+		return "";
+	}
+	
+	private Calendar setStartCalendarDate() {
 		
 		Calendar startCal = Calendar.getInstance();
 		startCal.setTime(startDate);
+		return startCal;
+	}
+	
+	private Calendar setEndCalendarDate() {
 		
 		Calendar endCal = Calendar.getInstance();
 		endCal.setTime(stopDate);
 		endCal.add(Calendar.DAY_OF_MONTH, 1);
-		
-		reportData = dao.findAllEntriesForRange(super.getUsername(), startCal, endCal);
-		return "";
+		return endCal;
 	}
 	
-	public List<TimeDifferential> getDateAndTimeForJob(){
+	private void aggregateData(List<TimeDifferential> foundReportData) {
 		
-		if(reportData == null)
-			new ArrayList<TimeDifferential>();
-		return reportData;
-	}
-	
-	public List<TimeDifferential> getFilteredData() {
-		return filteredData;
-	}
-	public void setFilteredData(List<TimeDifferential> filteredData) {
-		this.filteredData = filteredData;
+		Map<String, ReportSummary> reportDataAggregate = new HashMap<String, ReportSummary>();
+		
+		for (TimeDifferential timeDiff : foundReportData) {
+			
+			if(reportDataAggregate.containsKey(timeDiff.toString()))
+				reportDataAggregate.get(timeDiff.toString()).add(timeDiff.getDiff());
+			else
+				reportDataAggregate.put(timeDiff.toString(), new ReportSummary(timeDiff.getJob(),timeDiff.getDay(),timeDiff.getDiff()));
+		}
+		
+		reportData = new ArrayList<ReportSummary>(reportDataAggregate.values());
 	}
 }

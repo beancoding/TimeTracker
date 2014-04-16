@@ -58,4 +58,9 @@ public class TimeDifferential {
 		
 		return new BigDecimal(d).setScale(2);
 	}
+	
+	public String toString(){
+		
+		return job + ":" + getDay();
+	}
 }

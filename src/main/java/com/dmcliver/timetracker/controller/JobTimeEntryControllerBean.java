@@ -24,6 +24,7 @@ import com.dmcliver.timetracker.domain.NoteComment;
 import com.dmcliver.timetracker.domain.SysUser;
 import com.dmcliver.timetracker.domain.TimeDifferential;
 import com.dmcliver.timetracker.domain.TimeEntry;
+import com.dmcliver.timetracker.service.TimeService;
 
 @Component
 @ManagedBean
@@ -42,15 +43,54 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 	private String commentText;
 	private List<NoteComment> noteComments;
 	private boolean finished;
+	private double adjustedTime;
+	private TimeService timeService;
 	
 	@Autowired
-	public JobTimeEntryControllerBean(JobDAO jobDAO, TimeEntryDAO timeEntryDAO,	UserJobAssignmentDAO userJobAssignmentDAO, NoteDAO noteDAO, SysUserDAO sysUserDAO) {
+	public JobTimeEntryControllerBean(JobDAO jobDAO, TimeEntryDAO timeEntryDAO,	UserJobAssignmentDAO userJobAssignmentDAO, NoteDAO noteDAO, SysUserDAO sysUserDAO, TimeService timeService) {
 		
 		this.jobDAO = jobDAO;
 		this.timeEntryDAO = timeEntryDAO;
 		this.userJobAssignmentDAO = userJobAssignmentDAO;
 		this.noteDAO = noteDAO;
 		this.sysUserDAO = sysUserDAO;
+		this.timeService = timeService;
+	}
+	
+	public boolean isFinished() {
+		
+		if(job == null) refreshJob();
+		finished = job.isFinished();
+		return finished;
+	}
+	public void setFinished(boolean finished) {
+		this.finished = finished;
+	}
+
+	public double getAdjustedTime() {
+		return adjustedTime;
+	}
+
+	public void setAdjustedTime(double adjustedTime) {
+		this.adjustedTime = adjustedTime;
+	}
+	
+	public boolean isInProgress() {
+		return inProgress;
+	}
+	
+	public String getNoteText() {
+		return noteText;
+	}
+	public void setNoteText(String noteText) {
+		this.noteText = noteText;
+	}
+	
+	public String getCommentText() {
+		return commentText;
+	}
+	public void setCommentText(String commentText) {
+		this.commentText = commentText;
 	}
 	
 	public Job getJob() {
@@ -75,10 +115,6 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 						   .get("jobName");
 	}
 	
-	public boolean isInProgress() {
-		return inProgress;
-	}
-	
 	public String updateTime(){
 		
 		if(!inProgress){
@@ -94,11 +130,6 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 			entry.setEndTime(Calendar.getInstance());
 			timeEntryDAO.update(entry);
 			inProgress = false;
-			if(finished){
-				
-				job.setFinished(finished);
-				jobDAO.updateJobFinished(job);
-			}
 		}
 			
 		return "this";
@@ -123,13 +154,6 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 			noteComments = userJobAssignmentDAO.findAllAssociatedComments(getUsername(), job.getJobId(), this.finished);
 		return noteComments;
 	}
-
-	public String getNoteText() {
-		return noteText;
-	}
-	public void setNoteText(String noteText) {
-		this.noteText = noteText;
-	}
 	
 	public String addNote(){
 		
@@ -147,13 +171,6 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 		noteText = "";
 		return "this";
 	}
-
-	public String getCommentText() {
-		return commentText;
-	}
-	public void setCommentText(String commentText) {
-		this.commentText = commentText;
-	}
 	
 	public String addComment(){
 		
@@ -168,20 +185,36 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 		return "this";
 	}
 
+	public String finishJob(){
+		
+		job.setFinished(true);
+		jobDAO.updateJobFinished(job);
+		return "this";
+	}
+	
 	private void createAndUpdateNoteComments(TimeEntry entry) {
 		
 		NoteComment noteComment = new NoteComment(commentText, entry.getStartTime(), entry.getEndTime());
 		noteComments.add(noteComment);
 		commentText = "";
 	}
-
-	public boolean isFinished() {
+	
+	public String adjustTime(){
 		
-		if(job == null) refreshJob();
-		finished = job.isFinished();
-		return finished;
+		if(this.job == null) refreshJob();
+		
+		TimeEntry timeEntry = timeEntryDAO.findLastEntryForUser(super.getUsername(), job.getJobId());
+		setTime(timeEntry);
+		timeEntryDAO.update(timeEntry);
+		
+		adjustedTime = 0;
+		return "this";
 	}
-	public void setFinished(boolean finished) {
-		this.finished = finished;
+
+	private void setTime(TimeEntry timeEntry) {
+		
+		Calendar endTime = timeEntry.getEndTime();
+		timeService.addTime(endTime, adjustedTime);
+		timeEntry.setEndTime(endTime);
 	}
 }

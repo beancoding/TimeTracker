@@ -18,7 +18,7 @@ public class UserModel {
 		this.name = name;
 	}
 	
-	@Pattern(regexp = "^(?=.*[^0-9a-zA-Z])(?=.*\\d)(?=.*[A-Z])\\S{8,}$", message = "*The password must contain 1 capital, 1 number and 1 symbol")
+	@Pattern(regexp = "^(?=.*[^0-9a-zA-Z])(?=.*\\d)(?=.*[A-Z])\\S{8,}$", message = "*The password must be longer than 8 letters, contain 1 capital, 1 number & 1 symbol")
 	public String getPassword() {
 		return password;
 	}

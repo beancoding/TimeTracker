@@ -1,6 +1,6 @@
 function showDialogOnStop(el) {
 	
-	var showDlg = el.innerText.indexOf("Stop") != -1;
+	var showDlg = el.innerHTML.indexOf("Stop") != -1 || (el.innerText != undefined && el.innerText.indexOf("Stop") != -1);
 	
 	if(showDlg)	
 		PF('dlg1').show();

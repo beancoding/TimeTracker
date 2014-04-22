@@ -85,7 +85,7 @@
 				    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				    
 				    <p:commandButton value="Add" action="#{jobTimeEntryControllerBean.addComment}" update="@form,:form1:toggleButtonId,:form1:commentTable" process="@form" oncomplete="javascript:hideDialogOnComplete(args);"/>
-				    <p:commandButton value="Decline" />
+				    <p:commandButton value="Decline" oncomplete="javascript:hideDialogOnComplete({validationFailed:false});"/>
 				    
 			    </h:form>
 			</p:dialog>

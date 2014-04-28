@@ -40,7 +40,7 @@
 						</div>
 						<div style="float:right;clear:right;margin-top:10px">
 							<h:inputText id="timeAdjustmentVal" value="#{jobTimeEntryControllerBean.adjustedTime}" style="width:165px"/>
-							<p:commandButton value="Adjust time" action="#{jobTimeEntryControllerBean.adjustTime}" ajax="false" update=":form1:timeAdjustmentVal,:form1:timeElapsedTagEl" process=":form1:timeAdjustmentVal"/>
+							<p:commandButton id="timeAdjustmentButton" value="Adjust time" action="#{jobTimeEntryControllerBean.adjustTime}" ajax="false" update=":form1:timeAdjustmentVal,:form1:timeElapsedTagEl" process=":form1:timeAdjustmentVal"/>
 						</div>
 					</div>
 				</div>

@@ -24,3 +24,26 @@ function disableView(){
 	jChckBox.hide();
 }
 
+$(document).ready(function(){
+	
+	var jBttn = $("button[id*='timeAdjustmentButton']");
+	jBttn.prop("disabled", true);
+	jBttn.addClass("ui-state-disabled");
+	
+	var timeAdjustmentInput = $("input[id*='timeAdjustmentVal']");
+	timeAdjustmentInput.keyup(function() {
+		
+		var val = timeAdjustmentInput.val();
+		if(val && Math.abs(val) > 0) {
+			
+			jBttn.prop('disabled', false);
+			jBttn.removeClass("ui-state-disabled");
+		}
+		else {
+			
+			jBttn.prop("disabled", true);
+			jBttn.addClass("ui-state-disabled");
+		}
+	});	
+});
+

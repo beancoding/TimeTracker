@@ -1,12 +1,14 @@
 package com.dmcliver.timetracker.datalayer;
 
 import java.util.List;
+
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.ejb.criteria.OrderImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +44,7 @@ public class NoteDAOImpl implements NoteDAO {
 				criteria.equal(u.get("userName"), name), 
 				criteria.equal(n.get("job"), criteria.nullLiteral(Job.class))
 			)
-		);
+		).orderBy(new OrderImpl(n.get("noteId"), false));
 		
 		return entityManager.createQuery(query).getResultList();
 	}

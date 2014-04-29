@@ -76,7 +76,9 @@ public class JobTimeEntryControllerBean extends ControllerBeanBase{
 	}
 	
 	public boolean isInProgress() {
-		return inProgress;
+		
+		TimeEntry lastEntry = this.timeEntryDAO.findLastEntryInProgressForUser(getUsername(), job.getJobId());
+		return lastEntry != null;
 	}
 	
 	public String getNoteText() {

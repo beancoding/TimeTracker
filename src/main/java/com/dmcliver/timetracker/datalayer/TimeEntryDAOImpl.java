@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.ejb.criteria.OrderImpl;
@@ -103,6 +104,26 @@ public class TimeEntryDAOImpl implements TimeEntryDAO {
 		CriteriaQuery<TimeEntry> query = criteria.createQuery(TimeEntry.class);
 		
 		Root<TimeEntry> te = query.from(TimeEntry.class);
+		Predicate endTimeNotNull = criteria.notEqual(te.get("endTime"), criteria.nullLiteral(Calendar.class));
+		
+		TimeEntry timeEntry = getLastEntry(username, jobId, criteria, query, te, endTimeNotNull);
+		return timeEntry;
+	}
+
+	@Override
+	public TimeEntry findLastEntryInProgressForUser(String username, UUID jobId) {
+		
+		CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
+		CriteriaQuery<TimeEntry> query = criteria.createQuery(TimeEntry.class);
+		
+		Root<TimeEntry> te = query.from(TimeEntry.class);
+		Predicate endTimeNotNull = criteria.equal(te.get("endTime"), criteria.nullLiteral(Calendar.class));
+		
+		TimeEntry timeEntry = getLastEntry(username, jobId, criteria, query, te, endTimeNotNull);
+		return timeEntry;
+	}
+	
+	private TimeEntry getLastEntry(String username, UUID jobId,	CriteriaBuilder criteria, CriteriaQuery<TimeEntry> query, Root<TimeEntry> te, Predicate endTimeCriteria) {
 		
 		Join<TimeEntry, UserJobAssignment> uja = te.join("userJobAssignment");
 		Join<UserJobAssignment, SysUser> u = uja.join("sysUser");
@@ -115,11 +136,12 @@ public class TimeEntryDAOImpl implements TimeEntryDAO {
 		
 					criteria.equal(u.get("userName"), username),
 					criteria.equal(j.get("jobId"), jobId),
-					criteria.notEqual(te.get("endTime"), criteria.nullLiteral(Calendar.class)) 
+					endTimeCriteria 
 				)
 			).orderBy(new OrderImpl(te.get("endTime"), false));
 		
-		TimeEntry timeEntry = entityManager.createQuery(query).setMaxResults(1).getResultList().get(0);
+		List<TimeEntry> resultList = entityManager.createQuery(query).setMaxResults(1).getResultList();
+		TimeEntry timeEntry = resultList.size() < 1 ? null : resultList.get(0);
 		return timeEntry;
 	}
 }
